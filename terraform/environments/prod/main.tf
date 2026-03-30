@@ -1,12 +1,4 @@
 
-# Get Existing VPC
-
-data "aws_vpc" "main" {
-  filter {
-    name   = "tag:Name"
-    values = ["JimmyTechVPC"]
-  }
-}
 
 
 # Get Public Subnets
