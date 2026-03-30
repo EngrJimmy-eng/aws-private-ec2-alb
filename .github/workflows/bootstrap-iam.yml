@@ -1,0 +1,49 @@
+name: Bootstrap IAM Role
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-role:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Create OIDC Provider (if not exists)
+        run: |
+          aws iam create-open-id-connect-provider \
+            --url https://token.actions.githubusercontent.com \
+            --client-id-list sts.amazonaws.com \
+            --thumbprint-list 6938fd4d98bab03faadb97b34396831e3780aea1 || true
+
+      - name: Create IAM Role
+        run: |
+          aws iam create-role \
+            --role-name github-actions-terraform \
+            --assume-role-policy-document '{
+              "Version": "2012-10-17",
+              "Statement": [{
+                "Effect": "Allow",
+                "Principal": {
+                  "Federated": "arn:aws:iam::786827631657:oidc-provider/token.actions.githubusercontent.com"
+                },
+                "Action": "sts:AssumeRoleWithWebIdentity",
+                "Condition": {
+                  "StringLike": {
+                    "token.actions.githubusercontent.com:sub": "repo:EngrJimmy-eng/aws-private-ec2-alb:*"
+                  }
+                }
+              }]
+            }' || true
+
+      - name: Attach Admin Policy
+        run: |
+          aws iam attach-role-policy \
+            --role-name github-actions-terraform \
+            --policy-arn arn:aws:iam::aws:policy/AdministratorAccess
