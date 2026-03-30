@@ -16,7 +16,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: environments/prod
+        working-directory: terraform/environments/prod
 
     steps:
       
@@ -45,15 +45,18 @@ jobs:
       
       - name: Terraform Init
         run: terraform init
+        working-directory: terraform/environments/prod
 
       
       # Terraform Plan
       
       - name: Terraform Plan
         run: terraform plan
+        working-directory: terraform/environments/prod
 
       
       # Terraform Apply
       
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        working-directory: terraform/environments/prod
