@@ -1,15 +1,4 @@
 
-
-# -----------------------------
-# Get Private Subnets
-# -----------------------------
-data "aws_subnets" "private" {
-  filter {
-    name   = "tag:Name"
-    values = ["Private-*"]
-  }
-}
-
 # -----------------------------
 # ALB Module
 # -----------------------------
