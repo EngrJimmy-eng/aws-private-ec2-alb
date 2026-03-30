@@ -1,15 +1,5 @@
 
 
-
-# Get Public Subnets
-
-data "aws_subnets" "public" {
-  filter {
-    name   = "tag:Name"
-    values = ["Public-*"]
-  }
-}
-
 # -----------------------------
 # Get Private Subnets
 # -----------------------------
