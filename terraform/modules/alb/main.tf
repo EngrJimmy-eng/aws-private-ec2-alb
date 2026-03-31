@@ -2,7 +2,7 @@
 # Security Group for ALB
 
 resource "aws_security_group" "alb_sg" {
-  name        = "${var.name}-sg"
+  name        = "${var.name}-sg-new"
   description = "Allow HTTP inbound traffic"
   vpc_id      = var.vpc_id
 
