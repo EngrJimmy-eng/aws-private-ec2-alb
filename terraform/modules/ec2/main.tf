@@ -30,29 +30,18 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 
-# EC2 Instance (Private Subnet)
+module "ec2" {
+  source = "../../modules/ec2"
 
-resource "aws_instance" "app" {
-  ami           = var.ami
-  instance_type = var.instance_type
+  name             = "my-app"
+  ami              = "ami-12345678"   # 🔁 replace with your real AMI
+  instance_type    = "t3.micro"
 
-  private_subnets = data.aws_subnets.private.ids
+  vpc_id           = data.aws_vpc.main.id
+  private_subnets  = data.aws_subnets.private.ids   # ✅ REQUIRED
 
-  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
-
-  associate_public_ip_address = false  # 🔥 critical for private subnet
-
-  user_data = <<-EOF
-              #!/bin/bash
-              apt update -y
-              apt install -y nginx
-              systemctl start nginx
-              systemctl enable nginx
-              EOF
-
-  tags = {
-    Name = var.name
-  }
+  alb_sg_id        = aws_security_group.alb_sg.id
+  target_group_arn = aws_lb_target_group.app.arn
 }
 
 
