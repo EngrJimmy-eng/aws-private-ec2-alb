@@ -7,5 +7,5 @@ output "target_group_arn" {
 }
 
 output "alb_dns_name" {
-  value = aws_lb.alb.dns_name
+  value = data.aws_lb.alb.dns_name
 }
