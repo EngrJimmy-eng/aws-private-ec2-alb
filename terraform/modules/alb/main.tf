@@ -41,6 +41,10 @@ resource "aws_lb" "alb" {
   }
 }
 
+resource "random_id" "tg" {
+  byte_length = 2  # 2 bytes = 4 hex chars
+}
+
 
 # Target Group
 
