@@ -1,8 +1,6 @@
-########################################
-# ALB Security Group
-########################################
 resource "aws_security_group" "alb_sg" {
-  name        = "app-alb-sg"   # existing SG in your account
+  # Use the existing name
+  name        = "app-alb-sg"
   description = "Allow HTTP inbound traffic"
   vpc_id      = var.vpc_id
 
@@ -21,14 +19,13 @@ resource "aws_security_group" "alb_sg" {
   }
 
   lifecycle {
-    prevent_destroy = true  # prevents accidental deletion
+    prevent_destroy = true
   }
 
   tags = {
     Name = "app-alb-sg"
   }
 }
-
 ########################################
 # Random ID for Target Group
 ########################################
