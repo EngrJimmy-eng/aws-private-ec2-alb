@@ -1,5 +1,5 @@
 output "alb_sg_id" {
-  value = aws_security_group.alb_sg.id
+  value = data.aws_security_group.alb_sg.id
 }
 
 output "target_group_arn" {
