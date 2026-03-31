@@ -1,7 +1,7 @@
 
 # Security Group for ALB
 
-resource "aws_security_group" "alb_sg" {
+resource "aws_security_group" "alb_sg_new" {
   name        = "${var.name}-sg-new"
   description = "Allow HTTP inbound traffic"
   vpc_id      = var.vpc_id
@@ -44,7 +44,7 @@ resource "aws_lb" "alb" {
 
 # Target Group
 
-resource "aws_lb_target_group" "tg" {
+resource "aws_lb_target_group" "tg_new" {
   name     = "${var.name}-tg-new"
   port     = 80
   protocol = "HTTP"
