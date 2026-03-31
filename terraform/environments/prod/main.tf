@@ -9,7 +9,7 @@ module "ec2" {
   source = "../../modules/ec2"
 
   name             = "my-app"
-  ami              = "ami-12345678"       # replace with your AMI
+  ami = data.aws_ami.ubuntu.id 
   instance_type    = "t3.micro"
   vpc_id           = data.aws_vpc.main.id
   private_subnets  = data.aws_subnets.private.ids
