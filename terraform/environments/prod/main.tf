@@ -16,9 +16,13 @@ module "alb" {
 module "ec2" {
   source = "../../modules/ec2"
 
-  name              = "app-ec2"
-  vpc_id            = data.aws_vpc.main.id
-  subnet_id         = data.aws_subnets.private.ids[0]
-  alb_sg_id         = module.alb.alb_sg_id
-  target_group_arn  = module.alb.target_group_arn
+  name             = "my-app"
+  ami              = "ami-12345678"   # 🔁 replace with real AMI
+  instance_type    = "t3.micro"
+
+  vpc_id           = data.aws_vpc.main.id
+  private_subnets  = data.aws_subnets.private.ids
+
+  alb_sg_id        = aws_security_group.alb_sg.id
+  target_group_arn = aws_lb_target_group.app.arn
 }
