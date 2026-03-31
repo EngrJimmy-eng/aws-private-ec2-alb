@@ -40,6 +40,10 @@ jobs:
           role-to-assume: arn:aws:iam::786827631657:role/github-actions-terraform
           aws-region: eu-west-1
 
+      - name: Terraform Import Existing SG
+        run: |
+         terraform import module.alb.aws_security_group.alb_sg sg-09b93f9be1ee2b232 || echo "Already imported"
+
       
       # Terraform Init
       
