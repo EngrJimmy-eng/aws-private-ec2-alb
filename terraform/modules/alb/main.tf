@@ -1,13 +1,12 @@
-
-# Security Group for ALB
-
+########################################
+# ALB Security Group
+########################################
 resource "aws_security_group" "alb_sg" {
-  name_prefix = "${var.name}-alb-sg-"
+  name        = "app-alb-sg"   # existing SG in your account
   description = "Allow HTTP inbound traffic"
   vpc_id      = var.vpc_id
 
   ingress {
-    description = "HTTP from internet"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -15,70 +14,61 @@ resource "aws_security_group" "alb_sg" {
   }
 
   egress {
-    description = "Allow all outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  lifecycle {
+    prevent_destroy = true  # prevents accidental deletion
+  }
+
   tags = {
-    Name = "${var.name}-sg"
+    Name = "app-alb-sg"
   }
 }
 
-
-# Application Load Balancer
-
-resource "aws_lb" "alb" {
-  name               = var.name
-  load_balancer_type = "application"
-  subnets            = var.public_subnets
-  security_groups    = [aws_security_group.alb_sg.id]
-
-  tags = {
-    Name = var.name
-  }
-}
-
+########################################
+# Random ID for Target Group
+########################################
 resource "random_id" "tg" {
-  byte_length = 2  # 2 bytes = 4 hex chars
+  byte_length = 2  # creates 4 hex chars, unique suffix
 }
 
-
+########################################
 # Target Group
-
+########################################
 resource "aws_lb_target_group" "tg" {
-  name     = "mytg-${random_id.tg.hex}" 
+  name     = "app-alb-tg-${random_id.tg.hex}"
   port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc_id
 
   health_check {
-    enabled             = true
-    path                = "/"
-    interval            = 30
-    timeout             = 5
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-    matcher             = "200"
+    path = "/"
   }
 
-  tags = {
-    Name = "${var.name}-tg"
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
+########################################
+# Application Load Balancer
+########################################
+resource "aws_lb" "alb" {
+  name               = "app-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_sg.id]
+  subnets            = var.public_subnets
 
-# Listener (HTTP)
+  lifecycle {
+    prevent_destroy = true
+  }
 
-resource "aws_lb_listener" "listener" {
-  load_balancer_arn = aws_lb.alb.arn
-  port              = 80
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.tg.arn
+  tags = {
+    Name = "app-alb"
   }
 }
