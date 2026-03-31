@@ -45,7 +45,7 @@ resource "aws_lb" "alb" {
 # Target Group
 
 resource "aws_lb_target_group" "tg_new" {
-  name     = "${var.name}-tg-new"
+  name_prefix = "${var.name}-alb-tg-"
   port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc_id
