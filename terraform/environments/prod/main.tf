@@ -17,12 +17,13 @@ module "ec2" {
   source = "../../modules/ec2"
 
   name             = "my-app"
-  ami              = "ami-12345678"   # 🔁 replace with real AMI
+  ami              = "ami-12345678"
   instance_type    = "t3.micro"
 
   vpc_id           = data.aws_vpc.main.id
   private_subnets  = data.aws_subnets.private.ids
 
-  alb_sg_id        = aws_security_group.alb_sg.id
-  target_group_arn = aws_lb_target_group.app.arn
+  # ✅ FIXED — use module outputs
+  alb_sg_id        = module.alb.alb_sg_id
+  target_group_arn = module.alb.target_group_arn
 }
