@@ -11,7 +11,7 @@ module "alb" {
 module "ec2" {
   source = "../../modules/ec2"
 
-  name             = "my-app"
+  name             = "ikenna-web-prod-ec2"
   ami = data.aws_ami.ubuntu.id 
   instance_type    = "t3.micro"
   vpc_id           = data.aws_vpc.main.id
