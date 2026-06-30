@@ -20,3 +20,11 @@ module "ec2" {
   alb_sg_id        = module.alb.alb_sg_id
   target_group_arn = module.alb.target_group_arn
 }
+
+module "sns" {
+  source = "../../modules/sns"
+
+  project_name       = var.project_name
+  environment        = var.environment
+  notification_email = var.notification_email
+}
